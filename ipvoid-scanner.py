@@ -1,10 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import os
 import sys
 import time
 import requests
 import re
+import socket
 
 
 IPVOID_BLACKLIST_URL = "http://www.ipvoid.com/ip-blacklist-check/"
@@ -26,7 +27,15 @@ def check_ipvoid(ip):
     # for good in good_reputations:
     #     print good
 
-    print ip, all_bad
+    # Resolve ip to hostname
+    hostnames = []
+
+    try:
+        hostnames = socket.gethostbyaddr(ip)
+    except:
+        pass
+
+    print "%s | %s | %s" % (ip, hostnames, all_bad)
 
 
 lines = open(sys.argv[1]).readlines()
@@ -35,6 +44,3 @@ for line in lines:
         check_ipvoid(line.strip())
 
         time.sleep(3) # Wait for 3 seconds for each request to ipvoid
-        
-
-

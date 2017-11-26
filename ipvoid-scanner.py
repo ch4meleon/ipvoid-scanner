@@ -10,6 +10,12 @@ import socket
 
 IPVOID_BLACKLIST_URL = "http://www.ipvoid.com/ip-blacklist-check/"
 
+def write_log(filename, line):
+    f = open(filename, "a+")
+    f.write(line.strip() + "\n")
+    f.close()
+
+
 """ Check IP againsts IPVOID """
 def check_ipvoid(ip):
     r = requests.post(IPVOID_BLACKLIST_URL, data={'ip' : str(ip)})
@@ -35,7 +41,9 @@ def check_ipvoid(ip):
     except:
         pass
 
-    print "%s | %s | %s" % (ip, hostnames, all_bad)
+    tmpstr = "%s | %s | %s" % (ip, hostnames, all_bad)
+    print tmpstr
+    write_log("log.txt", tmpstr)
 
 
 lines = open(sys.argv[1]).readlines()
@@ -44,3 +52,6 @@ for line in lines:
         check_ipvoid(line.strip())
 
         time.sleep(3) # Wait for 3 seconds for each request to ipvoid
+
+
+
